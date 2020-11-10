@@ -3,18 +3,52 @@ Instruction :
 Install Docker,kubenetes,kubectl,minikube in your system.
 
 Installation of Docker:  https://docs.docker.com/engine/install/ubuntu/
+https://phoenixnap.com/kb/install-kubernetes-on-ubuntu
 After Installation start docker :
+sudo apt-get update
+sudo apt-get install docker.io
+docker --version
+sudo systemctl enable docker
+
+====================================================================
+Issue:
+ubuntu@ip-172-31-14-166 $ sudo systemctl enable docker
+Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable docker
+
+
+To solve this Issue => unmusk it.
+sudo systemctl unmask docker
+|
+|
+sudo systemctl status docker
+sudo systemctl start docker
 Command : 
       sudo systemctl start docker
       sudo systemctl status docker
 
 Installation of Kubenetes Tools:
+
+
+prerequisite:
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+sudo apt-get install curl
+sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+
+
+
 Step1 : sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
 Step2 : sudo chmod +x ./kubectl
 Step3 : sudo mv ./kubectl /usr/local/bin/kubectl 
 Step4 : kubectl version --client
+Download Minikube => curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 
 Step5 : sudo install minikube-linux-amd64 /usr/local/bin/minikube
 Step6 : minikube start --driver=docker
+        => May see a error.
+        => Read the error and execute the command from error message
+        => For My Case => sudo usermod -aG docker $USER && newgrp docker
+        => Then repeat step 6
 =========================================================
   Use "Docker" as default virtualization environment.
 =========================================================
@@ -87,3 +121,25 @@ Step 6 :
    Check Application:  
    Shell command _: minicube service first-app 
    Note : [to get all service list : =>  kubectl get services ]
+
+
+
+
+=============================================================================
+For Aws deployment
+=============================================================================
+if virtualiztion environment set as docker, have to delete first.
+minikube delete
+minikube start --driver=none   
+sudo -i
+kubectl get pods
+kubectl create deployment first-app-without-docker-virtualization --image=asad183099/kub-node-app
+kubectl get deployments
+kubectl expose deployment first-app-without-docker-virtualization --type=NodePort --port=8080
+kubectl get svc
+NAME                                      TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+first-app-without-docker-virtualization   NodePort    10.109.95.88   <none>        8080:30853/TCP   13s
+kubernetes                                ClusterIP   10.96.0.1      <none>        443/TCP          3m29s
+
+-:: Expose 30853 port in security group::-
+curl -v 13.212.171.232:30853
