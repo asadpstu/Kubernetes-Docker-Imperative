@@ -35,9 +35,6 @@ prerequisite:
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 sudo apt-get install curl
 sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-
-
-
 Step1 : sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
 Step2 : sudo chmod +x ./kubectl
 Step3 : sudo mv ./kubectl /usr/local/bin/kubectl 
